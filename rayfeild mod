@@ -491,6 +491,30 @@ local neon = (function() -- Open sourced neon module
 
 end)()
 
+function RayfieldLibrary:AddToConfig(dataName,data)
+	local Data = {}
+	for i,v in pairs(RayfieldLibrary.Flags) do
+		if v.Type == "ColorPicker" then
+			Data[i] = PackColor(v.Color)
+		else
+			Data[i] = v.CurrentValue or v.CurrentKeybind or v.CurrentOption or v.Color
+		end
+	end	
+	
+	Data[dataName] = data
+	
+	writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
+end
+
+function RayfieldLibrary:GetFromConfig(dataName)
+	local Data = HttpService:JSONDecode(readfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension))
+	for FlagName, FlagValue in next, Data do
+		if Data[dataName] then
+			return Data[dataName]
+		end
+	end
+end
+
 function RayfieldLibrary:Notify(NotificationSettings)
 	spawn(function()
 		local ActionCompleted = true
