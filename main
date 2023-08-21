@@ -10,13 +10,13 @@ iRay  | Programming
 
 
 
-local Release = "Beta 8"
+local Release = "UI 1"
 local NotificationDuration = 6.5
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
 
-print("loaded: "..Release)
+print("Loaded: "..Release)
 
 local RayfieldLibrary = {
 	Flags = {},
@@ -502,6 +502,8 @@ function RayfieldLibrary:AddToConfig(dataName,data)
 	end	
 	
 	Data[dataName] = data
+	
+	print(tostring(HttpService:JSONEncode(Data)))	
 	
 	writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
 end
