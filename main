@@ -10,7 +10,7 @@ iRay  | Programming
 
 
 
-local Release = "UI 1 - HF"
+local Release = "UI 1 - HF2"
 local NotificationDuration = 6.5
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
@@ -240,23 +240,6 @@ local function UnpackColor(Color)
 	return Color3.fromRGB(Color.R, Color.G, Color.B)
 end
 
-local function LoadConfiguration(Configuration)
-	local Data = HttpService:JSONDecode(Configuration)
-	for FlagName, FlagValue in next, Data do
-		if RayfieldLibrary.Flags[FlagName] then
-			spawn(function() 
-				if RayfieldLibrary.Flags[FlagName].Type == "ColorPicker" then
-					RayfieldLibrary.Flags[FlagName]:Set(UnpackColor(FlagValue))
-				else
-					if RayfieldLibrary.Flags[FlagName].CurrentValue or RayfieldLibrary.Flags[FlagName].CurrentKeybind or RayfieldLibrary.Flags[FlagName].CurrentOption or RayfieldLibrary.Flags[FlagName].Color ~= FlagValue then RayfieldLibrary.Flags[FlagName]:Set(FlagValue) end
-				end    
-			end)
-		else
-			RayfieldLibrary:Notify({Title = "Flag Error", Content = "Rayfield was unable to find '"..FlagName.. "'' in the current script"})
-		end
-	end
-end
-
 local extraDatas = {
 	--[[
 	[1] = {
@@ -278,10 +261,30 @@ local function SaveConfiguration()
 	end	
 	
 	for _,v in pairs(extraDatas) do
-		Data[v.name] = v.Value
+		Data["extraDatas"][v.name] = v.Value
 	end
 	
 	writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
+end
+
+local function LoadConfiguration(Configuration)
+	local Data = HttpService:JSONDecode(Configuration)
+	for FlagName, FlagValue in next, Data do
+		if RayfieldLibrary.Flags[FlagName] then
+			spawn(function() 
+				if RayfieldLibrary.Flags[FlagName].Type == "ColorPicker" then
+					RayfieldLibrary.Flags[FlagName]:Set(UnpackColor(FlagValue))
+				else
+					if RayfieldLibrary.Flags[FlagName].CurrentValue or RayfieldLibrary.Flags[FlagName].CurrentKeybind or RayfieldLibrary.Flags[FlagName].CurrentOption or RayfieldLibrary.Flags[FlagName].Color ~= FlagValue then RayfieldLibrary.Flags[FlagName]:Set(FlagValue) end
+				end    
+			end)
+		elseif FlagName == "extraDatas" then
+			extraDatas = HttpService:JSONDecode(FlagValue)
+			print(FlagValue)
+		else
+			RayfieldLibrary:Notify({Title = "Flag Error", Content = "Rayfield was unable to find '"..FlagName.. "'' in the current script"})
+		end
+	end
 end
 
 local neon = (function() -- Open sourced neon module
