@@ -10,7 +10,7 @@ iRay  | Programming
 
 
 
-local Release = "UI 1 - HF2"
+local Release = "UI 1.1"
 local NotificationDuration = 6.5
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
@@ -261,7 +261,7 @@ local function SaveConfiguration()
 	end	
 	
 	for _,v in pairs(extraDatas) do
-		Data["extraDatas"][v.name] = v.Value
+		Data[v.name] = v.Value
 	end
 	
 	writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
@@ -278,7 +278,7 @@ local function LoadConfiguration(Configuration)
 					if RayfieldLibrary.Flags[FlagName].CurrentValue or RayfieldLibrary.Flags[FlagName].CurrentKeybind or RayfieldLibrary.Flags[FlagName].CurrentOption or RayfieldLibrary.Flags[FlagName].Color ~= FlagValue then RayfieldLibrary.Flags[FlagName]:Set(FlagValue) end
 				end    
 			end)
-		elseif FlagName == "extraDatas" then
+		elseif FlagName == "autocrash" then
 			extraDatas = HttpService:JSONDecode(FlagValue)
 			print(FlagValue)
 		else
