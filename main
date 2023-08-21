@@ -10,7 +10,7 @@ iRay  | Programming
 
 
 
-local Release = "UI 1"
+local Release = "UI 1 - HF"
 local NotificationDuration = 6.5
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
@@ -257,6 +257,15 @@ local function LoadConfiguration(Configuration)
 	end
 end
 
+local extraDatas = {
+	--[[
+	[1] = {
+		Value = true,
+		name = "N/A"
+	}
+	]]
+}
+
 local function SaveConfiguration()
 	if not CEnabled then return end
 	local Data = {}
@@ -267,6 +276,11 @@ local function SaveConfiguration()
 			Data[i] = v.CurrentValue or v.CurrentKeybind or v.CurrentOption or v.Color
 		end
 	end	
+	
+	for _,v in pairs(extraDatas) do
+		Data[v.name] = v.Value
+	end
+	
 	writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
 end
 
@@ -500,11 +514,16 @@ function RayfieldLibrary:AddToConfig(dataName,data)
 			Data[i] = v.CurrentValue or v.CurrentKeybind or v.CurrentOption or v.Color
 		end
 	end	
-	
+
 	Data[dataName] = data
-	
+
 	print(tostring(HttpService:JSONEncode(Data)))	
 	
+	extraDatas[dataName] = {
+		Value = data,
+		name = dataName
+	}
+
 	writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
 end
 
