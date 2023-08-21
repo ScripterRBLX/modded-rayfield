@@ -16,7 +16,7 @@ local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
 
-
+print("loaded: "..Release)
 
 local RayfieldLibrary = {
 	Flags = {},
