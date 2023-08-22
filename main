@@ -10,7 +10,7 @@ iRay  | Programming
 
 
 
-local Release = "UI 1.1"
+local Release = "UI 1.2"
 local NotificationDuration = 6.5
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
@@ -267,6 +267,8 @@ local function SaveConfiguration()
 	writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
 end
 
+local configLoaded = false
+
 local function LoadConfiguration(Configuration)
 	local Data = HttpService:JSONDecode(Configuration)
 	for FlagName, FlagValue in next, Data do
@@ -285,6 +287,8 @@ local function LoadConfiguration(Configuration)
 			RayfieldLibrary:Notify({Title = "Flag Error", Content = "Rayfield was unable to find '"..FlagName.. "'' in the current script"})
 		end
 	end
+	
+	configLoaded = true
 end
 
 local neon = (function() -- Open sourced neon module
@@ -509,6 +513,8 @@ local neon = (function() -- Open sourced neon module
 end)()
 
 function RayfieldLibrary:AddToConfig(dataName,data)
+	repeat task.wait() until configLoaded
+	
 	local Data = {}
 	for i,v in pairs(RayfieldLibrary.Flags) do
 		if v.Type == "ColorPicker" then
